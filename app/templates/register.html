@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ super() }} - Register{% endblock %}
+
+{% block meta %} 
+  <link href="../static/assets/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="../static/css/signin.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<body class="text-center">
+  <main class="form-signin">
+    <form action="" method="POST">
+      <img class="mb-4" src="../static/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
+      <h1 class="h3 mb-3 fw-normal">Register, Please</h1>
+
+      <div class="form-floating">
+        {{ form.username(class="form-control", id="floatingInput", placeholder="Username") }}
+        <label for="floatingInput">UserName</label>
+      </div>
+
+      <div class="form-floating">
+        {{ form.email(class="form-control", id="floatingInput", placeholder="Email") }}
+        <label for="floatingInput">Email Adress</label>
+      </div>
+
+      <div class="form-floating">
+        {{ form.cnpj(class="form-control", id="floatingInput", placeholder="CPNJ") }}
+        <label for="floatingInput">CNPJ</label>
+      </div>
+
+      <div class="form-floating">
+        {{ form.password(class="form-control", id="floatingPassword", placeholder="Password") }}
+        <label for="floatingPassword">Password</label>
+      </div>
+
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+      <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+    </form>
+  </main>
+</body> 
+
+{% endblock %}
