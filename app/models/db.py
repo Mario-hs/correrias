@@ -1,26 +1,38 @@
 # from app import db
-from sqlalchemy import Boolean, create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String, Float
+from sqlalchemy import Boolean, create_engine, ForeignKey, event
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app import login_manager
 
+import contextlib
 
-engine = create_engine(f"sqlite:///./storage.sqlite", echo=True)
-db = declarative_base()
+@contextlib.contextmanager
+def transaction(connection):
+    if not connection.in_transaction():
+        with connection.begin():
+            yield connection
+    else:
+        yield connection
 
 
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 @login_manager.user_loader
 def load_user(user_id):
     return session.query(Station).get(user_id)
 
 # Declaracao das classes
-class Station(db):
+class Station():
 
     __tablename__ = "station"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     password = Column(String, nullable=False)
     email = Column(String, nullable=False)
@@ -38,8 +50,8 @@ class Station(db):
     def is_anonymous(self):
         return False
     
-    def get_id(self):
-        return str(self.id)
+    def get_id(Station):
+        return str(Station.id)
 
 
     def __repr__(self, name):
@@ -48,22 +60,22 @@ class Station(db):
         return f"<Station {self.name}>"
 
 
-class Package(db):
+class Package():
 
     __tablename__ = "package"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     weight = Column(String, nullable=False)
     sender_cpf = Column(String, nullable=False)
     sender_name = Column(String, nullable=False)
 
 
 
-class Transaction(db):
+class Transaction():
 
     __tablename__ = "transaction"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     status_transaction = Column(Boolean, nullable=False)
     source_id = Column(Integer, ForeignKey("station.id"))
     destiny_id = Column(Integer, ForeignKey("station.id"))
@@ -75,6 +87,9 @@ class Transaction(db):
 
 
 # fim da declaracao
+
+engine = create_engine(f"sqlite:///./storage.sqlite", echo=True)
+db = declarative_base()
 
 db.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)

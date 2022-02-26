@@ -63,7 +63,7 @@ def dashboard():
 @app.route("/home", methods=["GET"])
 def home():
     # print(int(load_user(Station.get_id.fget())))
-    # print(Station.get_id)
+    print(Station.get_id)
     return render_template('home.html', user=Station.get_id.__get__)
 
 @app.route("/view-all")
@@ -113,7 +113,8 @@ def order():
                     "dest": s.name,
                 }
             )
-        return jsonify(lista_package), 200
+        return render_template('order.html')
+        # return jsonify(lista_package), 200
 
     elif request.method == "POST":
         pack = request.json
