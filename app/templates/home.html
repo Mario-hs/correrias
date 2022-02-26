@@ -86,6 +86,7 @@
   </svg>
 
   <header>
+
       <div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 4.5rem;">
           <a href="/" class="d-block p-3 link-dark text-decoration-none" title="Icon-only" data-bs-toggle="tooltip" data-bs-placement="right">
           <svg class="bi" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
@@ -93,17 +94,17 @@
           </a>
           <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
           <li class="nav-item">
-              <a href="#" class="nav-link active py-3 border-bottom" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right">
+              <a href="{{ url_for('home') }}" class="nav-link active py-3 border-bottom" aria-current="page" title="Home" data-bs-toggle="tooltip" data-bs-placement="right">
               <svg class="bi" width="24" height="24" role="img" aria-label="Home"><use xlink:href="#home"/></svg>
               </a>
           </li>
           <li>
-              <a href="#" class="nav-link py-3 border-bottom" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
+              <a href="{{ url_for('dashboard') }}" class="nav-link py-3 border-bottom" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
               <svg class="bi" width="24" height="24" role="img" aria-label="Dashboard"><use xlink:href="#speedometer2"/></svg>
               </a>
           </li>
           <li>
-              <a href="#" class="nav-link py-3 border-bottom" title="Orders" data-bs-toggle="tooltip" data-bs-placement="right">
+              <a href="{{ url_for('order') }}" class="nav-link py-3 border-bottom" title="Orders" data-bs-toggle="tooltip" data-bs-placement="right">
               <svg class="bi" width="24" height="24" role="img" aria-label="Orders"><use xlink:href="#table"/></svg>
               </a>
           </li>
@@ -134,6 +135,11 @@
   </header>
 
   <main>
+        {% if user %}
+            <h1>Bem vindo ao Correrias, {{ user }}!</h1>
+        {% else %}
+            <h1>Bem vindo ao Correrias!</h1>
+        {% endif %}
       <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
@@ -146,7 +152,7 @@
     
             <div class="container">
               <div class="carousel-caption text-start">
-                <h1>Example headline.</h1>
+                <h1>Example.</h1>
                 <p>Some representative placeholder content for the first slide of the carousel.</p>
                 <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
               </div>

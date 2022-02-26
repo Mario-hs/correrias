@@ -11,19 +11,19 @@
 <body class="text-center">
   <main class="form-signin">
     <form action="" method="POST">
-      <!-- {{ form.csrf_token }} -->
+      {{ form.csrf_token }}
       <img class="mb-4" src="../static/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
       <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
       <div class="form-floating">
-        {{ form.username(class="form-control", id="floatingInput", placeholder="Username") }}
+        {{ form.name(class="form-control", id="floatingInput", placeholder="Username") }}
         <label for="floatingInput">UserName</label>
       </div>
       <div class="form-floating">
         {{ form.password(class="form-control", id="floatingPassword", placeholder="Password") }}
         <label for="floatingPassword">Password</label>
       </div>
-      
+
       <div class="checkbox mb-3" style="text-align:initial">
         <label>
           {{ form.remember_me() }} Remember me
@@ -31,7 +31,22 @@
       </div>
       <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
       <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+      
+      
     </form>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-warning">
+          <ul class=flashes>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+
   </main>
 </body> 
 
