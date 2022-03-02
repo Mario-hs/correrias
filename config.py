@@ -1,8 +1,6 @@
-import os
-# basedir = os.path.abspath(os.path.dirname(__file__))
 DEBUG = True
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:////storage.db'
+SQLALCHEMY_DATABASE_URI = 'sqlite:///./storage.sqlite'
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 SECRET_KEY = 'secuty-password'

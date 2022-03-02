@@ -1,13 +1,11 @@
-from os import name
-from tokenize import String
 from flask import Flask, jsonify, request
 from flask import redirect, render_template, request, url_for, flash
-from flask_login import login_user
-from sqlalchemy import null
+from flask_login import current_user, login_user, logout_user
+
 from app import app, db
 
 from app.models.db import Station, Package, Transaction, session
-from app.models.forms import LoginForm, RegisterForm
+from app.models.forms import LoginForm, RegisterForm, PackageRegisterForm
 
 
 @app.route("/", methods=["GET"])
@@ -20,7 +18,7 @@ def login():
     if request.method == 'POST' and form.validate():
     # if request.method == 'POST':
         try:
-            user = (session.query(Station).filter(form.name.data == Station.name).one())
+            user = (session.query(Station).filter(form.name.data == Station.name).first())
             if user and form.password.data == user.password:
                 login_user(user)
                 return redirect(url_for('home'))
@@ -32,8 +30,11 @@ def login():
             return print()
     else:
         return render_template('sign-in.html', form=form)
-                
 
+@app.route("/logout")                
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 @app.route("/register", methods=["GET", "POST"])
 def registerStation():
@@ -50,7 +51,7 @@ def registerStation():
             )
             session.commit()
 
-            return url_for('dashboard'), 200
+            return url_for('index'), 200
         except Exception as ex:
             return print(ex)
     return render_template('register.html', form=form)
@@ -62,9 +63,39 @@ def dashboard():
 
 @app.route("/home", methods=["GET"])
 def home():
-    # print(int(load_user(Station.get_id.fget())))
-    print(Station.get_id)
-    return render_template('home.html', user=Station.get_id.__get__)
+    if request.method == "GET":
+        lista_package = []
+        package = session.query(Transaction).filter(Transaction.destiny_id == current_user.id)
+
+        for p in package:
+            station_dest = session.query(Station).filter(Station.id == p.destiny_id).all()
+            station_ori = session.query(Station).filter(Station.id == p.source_id).all()
+
+            for o in station_ori:
+                # orig_id = o.id
+                orig_name = o.name
+
+                for d in station_dest:
+                    # dest_id = d.id
+                    dest_name = d.name
+
+            lista_package.append(
+                {
+                    "id": p.id,
+                    "source_id":p.source_id,
+                    "destiny_id":p.destiny_id,
+                    "status_transaction":p.status_transaction,
+                    "orig": orig_name,
+                    "dest": dest_name,
+                }
+            )
+
+    # current_user pega o usuário logado
+    if current_user.is_authenticated:
+        print(current_user.id)
+        return render_template('home.html', lista_package = lista_package)
+    else:
+        return redirect(url_for('index'))
 
 @app.route("/view-all")
 def view():
@@ -78,70 +109,70 @@ def registerUpdate():
 
 @app.route("/order", methods=["GET", "POST", "PUT", "DELETE"])
 def order():
+    form = PackageRegisterForm(request.form)
+
     if request.method == "GET":
-        lista_package = []
+        stations = (
+                    session.query(Station)
+                    .filter(Station.id != current_user.id)
+                    .all()
+                )
+        for o in stations:
+            print(o.name)
+        return render_template('order.html', form=form, stations=stations)
 
-        # session.query(Package).filter(Package.id_package == 1)
 
-        package = session.query(Transaction).all()
-
-        for p in package:
-
-            station_dest = session.query(Station).filter(Station.id == p.destiny_id).all()
-
-            station_ori = session.query(Station).filter(Station.id == p.source_id).all()
-
-            lista_package.append(
-                {
-                    "id": p.id,
-                    "source_id":p.source_id,
-                    "destiny_id":p.destiny_id,
-                    "status_transaction":p.status_transaction,
-                }
-            )
-
-        for s in station_ori:
-            lista_package.append(
-                {
-                    "orig": s.name,
-                }
-            )
-
-        for s in station_dest:
-            lista_package.append(
-                {
-                    "dest": s.name,
-                }
-            )
-        return render_template('order.html')
-        # return jsonify(lista_package), 200
-
+    # elif request.method == "POST" and form.validate():
     elif request.method == "POST":
-        pack = request.json
-        session.add(
-            Transaction(
-                package_id= pack["package_id"],
-                destiny_id= pack["destiny_id"],
-                source_id= pack["source_id"],
-                status_transaction = pack["status_transaction"],
-            ),
-            Package(
-                weight = pack["weight"],
-                sender_cpf = pack["sender_cpf"],
-                sender_name = pack["sender_name"]
-            )
+       
+        print('ENTREI')
+        print(current_user.id)
+        print(form.weight.data)
+        print(form.cpf.data)
+        print(form.name.data)
+        print()
+        # pack = request.json
+        # session.add(
+            # Transaction(
+            #     package_id= pack["package_id"],
+            #     destiny_id= pack["destiny_id"],
+            #     source_id= pack["source_id"],
+            #     status_transaction = pack["status_transaction"],
+            # ),
+            # Package(
+            #     weight = pack["weight"],
+            #     sender_cpf = pack["sender_cpf"],
+            #     sender_name = pack["sender_name"]
+            # )
 
-        )
-        session.commit()
-        return "", 200
+        #     Transaction(
+        #         # package_id= form.id.data,
+        #         package_id= 1,
+        #         destiny_id= 1,
+        #         source_id= current_user.id,
+        #         status_transaction = False,
+        #     ),
+        #     Package(
+        #         weight = form.weight.data,
+        #         sender_cpf = form.cpf.data,
+        #         sender_name = form.name.data
+        #     )
+        # )
+        # session.commit()
+        # print(Transaction)
+        # print(Package)
+        # return url_for('order'), 200
+        
 
+    return render_template('order.html', form=form)
 
 @app.route("/station", methods=["GET", "POST", "PUT", "DELETE"])
 def station():
     if request.method == "GET":
         lista_station = []
+        
         # session.query(Station).filter(Station.id_station == 1)
-        station = session.query(Station).all()
+        station = session.query(Station.id, Station.name, Station.password, Station.email, Station.cnpj).all()
         for s in station:
             lista_station.append(
                 {
@@ -165,3 +196,38 @@ def station():
         )
         session.commit()
         return "", 200
+
+@app.route("/packages", methods=["GET", "POST", "PUT", "DELETE"])
+def package():
+    if request.method == "GET":
+        lista_package = []
+        package = session.query(Transaction).filter(Transaction.source_id == current_user.id)
+
+        for p in package:
+            station_dest = session.query(Station).filter(Station.id == p.destiny_id).all()
+            station_ori = session.query(Station).filter(Station.id == p.source_id).all()
+
+            for o in station_ori:
+                # orig_id = o.id
+                orig_name = o.name
+
+                for d in station_dest:
+                    # dest_id = d.id
+                    dest_name = d.name
+
+            lista_package.append(
+                {
+                    "id": p.id,
+                    "source_id":p.source_id,
+                    "destiny_id":p.destiny_id,
+                    "status_transaction":p.status_transaction,
+                    "orig": orig_name,
+                    "dest": dest_name,
+                }
+            )
+        for l in lista_package:
+            print()
+            # print(l['orig'])
+            print(l)
+            print()
+    return render_template('package.html', lista_package = lista_package)

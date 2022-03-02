@@ -8,6 +8,13 @@ from app import login_manager
 
 import contextlib
 
+engine = create_engine(f"sqlite:///./storage.sqlite", echo=True)
+db = declarative_base()
+
+db.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+session = Session()
+
 @contextlib.contextmanager
 def transaction(connection):
     if not connection.in_transaction():
@@ -28,7 +35,7 @@ def load_user(user_id):
     return session.query(Station).get(user_id)
 
 # Declaracao das classes
-class Station():
+class Station(db):
 
     __tablename__ = "station"
 
@@ -53,14 +60,11 @@ class Station():
     def get_id(Station):
         return str(Station.id)
 
+    # def __repr__(self, name):
+    #     self.name = name
+    #     return f"<Station {self.name}>"
 
-    def __repr__(self, name):
-        self.name = name
-
-        return f"<Station {self.name}>"
-
-
-class Package():
+class Package(db):
 
     __tablename__ = "package"
 
@@ -68,10 +72,7 @@ class Package():
     weight = Column(String, nullable=False)
     sender_cpf = Column(String, nullable=False)
     sender_name = Column(String, nullable=False)
-
-
-
-class Transaction():
+class Transaction(db):
 
     __tablename__ = "transaction"
 
@@ -85,12 +86,5 @@ class Transaction():
         self.source_id
         self.destiny_id
 
-
 # fim da declaracao
 
-engine = create_engine(f"sqlite:///./storage.sqlite", echo=True)
-db = declarative_base()
-
-db.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
