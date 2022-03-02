@@ -2,8 +2,7 @@ from flask import Flask, jsonify, request
 from flask import redirect, render_template, request, url_for, flash
 from flask_login import current_user, login_user, logout_user
 
-from app import app, db
-
+from app import app
 from app.models.db import Station, Package, Transaction, session
 from app.models.forms import LoginForm, RegisterForm, PackageRegisterForm
 
@@ -15,8 +14,8 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
+
     if request.method == 'POST' and form.validate():
-    # if request.method == 'POST':
         try:
             user = (session.query(Station).filter(form.name.data == Station.name).first())
             if user and form.password.data == user.password:
@@ -65,34 +64,36 @@ def dashboard():
 def home():
     if request.method == "GET":
         lista_package = []
-        package = session.query(Transaction).filter(Transaction.destiny_id == current_user.id)
+        transaction = session.query(Transaction).filter(Transaction.destiny_id == current_user.id)
 
-        for p in package:
-            station_dest = session.query(Station).filter(Station.id == p.destiny_id).all()
-            station_ori = session.query(Station).filter(Station.id == p.source_id).all()
+        for trans in transaction:
+            station_dest = session.query(Station).filter(Station.id == trans.destiny_id).all()
+            station_ori = session.query(Station).filter(Station.id == trans.source_id).all()
+            data_pack = session.query(Package).filter(Package.id_pack == trans.package_id).all()
 
             for o in station_ori:
-                # orig_id = o.id
+                orig_id = o.id
                 orig_name = o.name
 
                 for d in station_dest:
-                    # dest_id = d.id
+                    dest_id = d.id
                     dest_name = d.name
 
+            for p in data_pack:
+                idPack = p.id_pack
             lista_package.append(
                 {
-                    "id": p.id,
-                    "source_id":p.source_id,
-                    "destiny_id":p.destiny_id,
-                    "status_transaction":p.status_transaction,
+                    "id": idPack,
+                    "source_id": orig_name,
+                    "destiny_id": dest_name,
+                    "status_transaction": trans.status_transaction,
                     "orig": orig_name,
                     "dest": dest_name,
                 }
             )
-
+            
     # current_user pega o usuário logado
     if current_user.is_authenticated:
-        print(current_user.id)
         return render_template('home.html', lista_package = lista_package)
     else:
         return redirect(url_for('index'))
@@ -122,49 +123,33 @@ def order():
         return render_template('order.html', form=form, stations=stations)
 
 
-    # elif request.method == "POST" and form.validate():
-    elif request.method == "POST":
-       
-        print('ENTREI')
-        print(current_user.id)
-        print(form.weight.data)
-        print(form.cpf.data)
-        print(form.name.data)
-        print()
-        # pack = request.json
-        # session.add(
-            # Transaction(
-            #     package_id= pack["package_id"],
-            #     destiny_id= pack["destiny_id"],
-            #     source_id= pack["source_id"],
-            #     status_transaction = pack["status_transaction"],
-            # ),
-            # Package(
-            #     weight = pack["weight"],
-            #     sender_cpf = pack["sender_cpf"],
-            #     sender_name = pack["sender_name"]
-            # )
+    elif request.method == "POST" and form.validate():
+    # elif request.method == "POST":
+        select = request.form.get('station')
+        pack = request.json
+        session.add(
+            Package(
+                id_pack = form.id_pack.data,
+                weight = form.weight.data,
+                sender_cpf = form.cpf.data,
+                sender_name = form.name.data,
+                sender_email = form.email.data
+            )
+        )
+        session.commit()
 
-        #     Transaction(
-        #         # package_id= form.id.data,
-        #         package_id= 1,
-        #         destiny_id= 1,
-        #         source_id= current_user.id,
-        #         status_transaction = False,
-        #     ),
-        #     Package(
-        #         weight = form.weight.data,
-        #         sender_cpf = form.cpf.data,
-        #         sender_name = form.name.data
-        #     )
-        # )
-        # session.commit()
-        # print(Transaction)
-        # print(Package)
-        # return url_for('order'), 200
-        
-
+        session.add(
+            Transaction(
+                package_id= form.id_pack.data,
+                destiny_id= select,
+                source_id= current_user.id,
+                status_transaction = False,
+            )
+        )
+        session.commit()
+        return url_for('order'), 200   
     return render_template('order.html', form=form)
+
 
 @app.route("/station", methods=["GET", "POST", "PUT", "DELETE"])
 def station():
@@ -201,33 +186,31 @@ def station():
 def package():
     if request.method == "GET":
         lista_package = []
-        package = session.query(Transaction).filter(Transaction.source_id == current_user.id)
+        transaction = session.query(Transaction).filter(Transaction.source_id == current_user.id)
 
-        for p in package:
-            station_dest = session.query(Station).filter(Station.id == p.destiny_id).all()
-            station_ori = session.query(Station).filter(Station.id == p.source_id).all()
+        for trans in transaction:
+            station_dest = session.query(Station).filter(Station.id == trans.destiny_id).all()
+            station_ori = session.query(Station).filter(Station.id == trans.source_id).all()
+            data_pack = session.query(Package).filter(Package.id_pack == trans.package_id).all()
 
             for o in station_ori:
-                # orig_id = o.id
+                orig_id = o.id
                 orig_name = o.name
 
                 for d in station_dest:
-                    # dest_id = d.id
+                    dest_id = d.id
                     dest_name = d.name
 
+            for p in data_pack:
+                idPack = p.id_pack
             lista_package.append(
                 {
-                    "id": p.id,
-                    "source_id":p.source_id,
-                    "destiny_id":p.destiny_id,
-                    "status_transaction":p.status_transaction,
+                    "id": idPack,
+                    "source_id": trans.source_id,
+                    "destiny_id": trans.destiny_id,
+                    "status_transaction": trans.status_transaction,
                     "orig": orig_name,
                     "dest": dest_name,
                 }
             )
-        for l in lista_package:
-            print()
-            # print(l['orig'])
-            print(l)
-            print()
     return render_template('package.html', lista_package = lista_package)

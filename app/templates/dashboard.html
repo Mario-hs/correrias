@@ -11,7 +11,7 @@
 {% block content %}
 
 <body>
-
+  <!-- DADOS DO DASHBOARD MERAMENTE ILUSTRATIVOS -->
   <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
     <symbol id="bootstrap" viewBox="0 0 118 94">
       <title>Bootstrap</title>
@@ -116,12 +116,10 @@
   </svg>
 
   <section style="display: flex;">
-
-    <!-- <nav id="sidebarMenu" class="col-md-3 bg-light sidebar " style="width: 73px;padding: 0px;"> -->
     <nav id="sidebarMenu" class="col-md-3 bg-light sidebar" style="width: 73px; padding: 0px; position: fixed;">
       <div class="d-flex flex-column flex-shrink-0 bg-light" style="width: 73px; height: 100vh!important;">
-        <a href="/" class="d-block p-3 link-dark text-decoration-none border-bottom" title="Icon-only"
-          data-bs-toggle="tooltip" data-bs-placement="right">
+        <a href="{{ url_for('home') }}" class="d-block p-3 link-dark text-decoration-none border-bottom"
+          title="Icon-only" data-bs-toggle="tooltip" data-bs-placement="right">
           <svg class="bi" width="40" height="32">
             <use xlink:href="#bootstrap" />
           </svg>
@@ -193,142 +191,135 @@
         <h1 class="h2">Dashboard</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group me-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Recebidos</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Enviados</button>
           </div>
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
-            This week
+            Por Mês
           </button>
         </div>
       </div>
 
       <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
-      <h2>Section title</h2>
+      <h2>Dados dos Pacotes</h2>
       <div class="table-responsive">
         <table class="table table-striped table-sm">
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Header</th>
-              <th scope="col">Header</th>
-              <th scope="col">Header</th>
-              <th scope="col">Header</th>
+              <th scope="col">Código do Pacote</th>
+              <th scope="col">Status</th>
+              <th scope="col">Dia</th>
+              <th scope="col">Remetente</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>1,001</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td>text</td>
+              <td>1</td>
+              <td>CR123456782TX</td>
+              <td>A caminho</td>
+              <td>28/10/2021</td>
+              <td>Mr. Prince</td>
             </tr>
             <tr>
-              <td>1,002</td>
-              <td>placeholder</td>
-              <td>irrelevant</td>
-              <td>visual</td>
-              <td>layout</td>
+              <td>2</td>
+              <td>CR123456783TX</td>
+              <td>Entregue</td>
+              <td>28/10/2021</td>
+              <td>Carolina</td>
             </tr>
             <tr>
-              <td>1,003</td>
-              <td>data</td>
-              <td>rich</td>
-              <td>dashboard</td>
-              <td>tabular</td>
+              <td>3</td>
+              <td>CR123456784TX</td>
+              <td>A caminho</td>
+              <td>29/10/2021</td>
+              <td>Rafael G.</td>
             </tr>
             <tr>
-              <td>1,003</td>
-              <td>information</td>
-              <td>placeholder</td>
-              <td>illustrative</td>
-              <td>data</td>
+              <td>4</td>
+              <td>CR123456785TX</td>
+              <td>A caminho</td>
+              <td>02/11/2021</td>
+              <td>Rafael V.</td>
             </tr>
             <tr>
-              <td>1,004</td>
-              <td>text</td>
-              <td>random</td>
-              <td>layout</td>
-              <td>dashboard</td>
+              <td>5</td>
+              <td>CR123456786TX</td>
+              <td>Entregue</td>
+              <td>10/11/2021</td>
+              <td>Antonielly</td>
             </tr>
             <tr>
-              <td>1,005</td>
-              <td>dashboard</td>
-              <td>irrelevant</td>
-              <td>text</td>
-              <td>placeholder</td>
+              <td>6</td>
+              <td>CR123456787TX</td>
+              <td>Entregue</td>
+              <td>11/11/2021</td>
+              <td>Onã</td>
             </tr>
             <tr>
-              <td>1,006</td>
-              <td>dashboard</td>
-              <td>illustrative</td>
-              <td>rich</td>
-              <td>data</td>
+              <td>7</td>
+              <td>CR123456788TX</td>
+              <td>A caminho</td>
+              <td>11/11/2021</td>
+              <td>Gaspar</td>
             </tr>
             <tr>
-              <td>1,007</td>
-              <td>placeholder</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>irrelevant</td>
+              <td>8</td>
+              <td>CR123456789TX</td>
+              <td>A caminho</td>
+              <td>12/11/2021</td>
+              <td>Mychaella</td>
             </tr>
             <tr>
-              <td>1,008</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td>text</td>
+              <td>9</td>
+              <td>CR123456791TX</td>
+              <td>Entregue</td>
+              <td>20/11/2021</td>
+              <td>Simone</td>
             </tr>
             <tr>
-              <td>1,009</td>
-              <td>placeholder</td>
-              <td>irrelevant</td>
-              <td>visual</td>
-              <td>layout</td>
+              <td>10</td>
+              <td>CR123456789TX</td>
+              <td>A caminho</td>
+              <td>25/11/2021</td>
+              <td>Carla</td>
             </tr>
             <tr>
-              <td>1,010</td>
-              <td>data</td>
-              <td>rich</td>
-              <td>dashboard</td>
-              <td>tabular</td>
+              <td>11</td>
+              <td>CR123456789TX</td>
+              <td>A caminho</td>
+              <td>29/11/2021</td>
+              <td>Bruno</td>
             </tr>
             <tr>
-              <td>1,011</td>
-              <td>information</td>
-              <td>placeholder</td>
-              <td>illustrative</td>
-              <td>data</td>
+              <td>12</td>
+              <td>CR123456792TX</td>
+              <td>Entregue</td>
+              <td>02/01/2022</td>
+              <td>Murillo</td>
             </tr>
             <tr>
-              <td>1,012</td>
-              <td>text</td>
-              <td>placeholder</td>
-              <td>layout</td>
-              <td>dashboard</td>
+              <td>13</td>
+              <td>CR123456793TX</td>
+              <td>A caminho</td>
+              <td>15/01/2022</td>
+              <td>Gustavo</td>
             </tr>
             <tr>
-              <td>1,013</td>
-              <td>dashboard</td>
-              <td>irrelevant</td>
-              <td>text</td>
-              <td>visual</td>
+              <td>14</td>
+              <td>CR123456794TX</td>
+              <td>Entregue</td>
+              <td>22/01/2022</td>
+              <td>Daniella</td>
             </tr>
             <tr>
-              <td>1,014</td>
-              <td>dashboard</td>
-              <td>illustrative</td>
-              <td>rich</td>
-              <td>data</td>
-            </tr>
-            <tr>
-              <td>1,015</td>
-              <td>random</td>
-              <td>tabular</td>
-              <td>information</td>
-              <td>text</td>
+              <td>15</td>
+              <td>CR123456795TX</td>
+              <td>A caminho</td>
+              <td>15/02/2022</td>
+              <td>Jess</td>
             </tr>
           </tbody>
         </table>
@@ -367,7 +358,6 @@
     integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
     crossorigin="anonymous"></script>
   <script src="../static/js/dashboard.js"></script>
-
 </body>
 
 {% endblock %}

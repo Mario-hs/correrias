@@ -11,9 +11,9 @@ import contextlib
 engine = create_engine(f"sqlite:///./storage.sqlite", echo=True)
 db = declarative_base()
 
-db.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-session = Session()
+# db.metadata.create_all(engine)
+# Session = sessionmaker(bind=engine)
+# session = Session()
 
 @contextlib.contextmanager
 def transaction(connection):
@@ -68,23 +68,27 @@ class Package(db):
 
     __tablename__ = "package"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_pack = Column(String, primary_key=True)
     weight = Column(String, nullable=False)
     sender_cpf = Column(String, nullable=False)
     sender_name = Column(String, nullable=False)
+    sender_email = Column(String, nullable=False)
 class Transaction(db):
 
     __tablename__ = "transaction"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_trans = Column(Integer, primary_key=True, autoincrement=True)
     status_transaction = Column(Boolean, nullable=False)
-    source_id = Column(Integer, ForeignKey("station.id"))
-    destiny_id = Column(Integer, ForeignKey("station.id"))
-    package_id = Column(String, ForeignKey("package.id"))
+    source_id = Column(Integer, ForeignKey("station.id"), nullable=False)
+    destiny_id = Column(Integer, ForeignKey("station.id"), nullable=False)
+    package_id = Column(String, ForeignKey("package.id_pack"), nullable=False)
 
-    def __init__(self, source_id, destiny_id):
-        self.source_id
-        self.destiny_id
+    # def __init__(self, source_id, destiny_id):
+    #     self.source_id
+    #     self.destiny_id
 
 # fim da declaracao
 
+db.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+session = Session()
