@@ -72,14 +72,12 @@ def dashboard():
 def home():
     if current_user.is_authenticated:
         form = UpdateRegisterPack(request.form)
-        if request.method == "POST":
+        if request.method == "POST" or request.method == "GET":
             pack_confirmed = form.id.data
             session.query(Transaction).filter(Transaction.package_id == pack_confirmed).update({"status_transaction": 1})
             session.commit()
-            return render_template('home.html', lista_package = lista_package, form = form)
-
-        if request.method == "GET":
             lista_package = []
+       
             transaction = session.query(Transaction).filter(Transaction.destiny_id == current_user.id)
 
             for trans in transaction:
