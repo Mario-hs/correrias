@@ -78,7 +78,7 @@ class Transaction(db):
     __tablename__ = "transaction"
 
     id_trans = Column(Integer, primary_key=True, autoincrement=True)
-    status_transaction = Column(Boolean, nullable=False)
+    status_transaction = Column(Integer, nullable=False)
     source_id = Column(Integer, ForeignKey("station.id"), nullable=False)
     destiny_id = Column(Integer, ForeignKey("station.id"), nullable=False)
     package_id = Column(String, ForeignKey("package.id_pack"), nullable=False)

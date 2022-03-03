@@ -1,5 +1,5 @@
 from tkinter.tix import Select
-from wtforms import Form, BooleanField, StringField, PasswordField, validators
+from wtforms import Form, BooleanField, StringField, PasswordField, validators, IntegerField
 
 class LoginForm(Form):
     name = StringField('name', [validators.data_required()])
@@ -18,6 +18,7 @@ class RegisterForm(Form):
 
     cnpj = StringField('cnpj', [validators.data_required(), validators.Length(min=14, max=14)])
 
+
 class PackageRegisterForm(Form):
     name = StringField('name', [validators.data_required(), validators.Length(min=4, max=25)])
 
@@ -28,3 +29,7 @@ class PackageRegisterForm(Form):
     id_pack = StringField('id_pack', [validators.data_required(), validators.Length(min=12, max=12)])
 
     weight = StringField('weight', [validators.data_required(), validators.Length(min=1, max=5)])
+
+
+class UpdateRegisterPack(Form):
+    id = StringField('id')
