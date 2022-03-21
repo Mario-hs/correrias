@@ -3,7 +3,7 @@ from sqlalchemy import Boolean, create_engine, ForeignKey, event
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from app import login_manager
 
 import contextlib
@@ -11,9 +11,9 @@ import contextlib
 engine = create_engine(f"sqlite:///./storage.sqlite", echo=True)
 db = declarative_base()
 
-# db.metadata.create_all(engine)
-# Session = sessionmaker(bind=engine)
-# session = Session()
+db.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+session = Session()
 
 @contextlib.contextmanager
 def transaction(connection):
@@ -37,7 +37,7 @@ def load_user(user_id):
 # Declaracao das classes
 class Station(db):
 
-    __tablename__ = "station"
+    __tablename__ = "stations"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
@@ -64,28 +64,30 @@ class Station(db):
     #     self.name = name
     #     return f"<Station {self.name}>"
 
+class Transaction(db):
+
+    __tablename__ = "transactions"
+
+    id_trans = Column(Integer, primary_key=True, autoincrement=True)
+    status_transaction = Column(Integer, nullable=False)
+    source_id = Column(Integer, ForeignKey("stations.id"), nullable=False)
+    destiny_id = Column(Integer, ForeignKey("stations.id"), nullable=False)
+    package_id = Column(Integer, ForeignKey("packages.id_pack"))
+    package = relationship('Package')
+    # trans = relationship(Package, backref="package")
+    
 class Package(db):
 
-    __tablename__ = "package"
+    __tablename__ = "packages"
 
-    id_pack = Column(String, primary_key=True)
+    id_pack = Column(Integer, primary_key=True, autoincrement=True)
+    id_tracking = Column(String, nullable=False)
     weight = Column(String, nullable=False)
     sender_cpf = Column(String, nullable=False)
     sender_name = Column(String, nullable=False)
     sender_email = Column(String, nullable=False)
-class Transaction(db):
+    transaction = relationship(Transaction, backref="packages")
 
-    __tablename__ = "transaction"
-
-    id_trans = Column(Integer, primary_key=True, autoincrement=True)
-    status_transaction = Column(Integer, nullable=False)
-    source_id = Column(Integer, ForeignKey("station.id"), nullable=False)
-    destiny_id = Column(Integer, ForeignKey("station.id"), nullable=False)
-    package_id = Column(String, ForeignKey("package.id_pack"), nullable=False)
-
-    # def __init__(self, source_id, destiny_id):
-    #     self.source_id
-    #     self.destiny_id
 
 # fim da declaracao
 

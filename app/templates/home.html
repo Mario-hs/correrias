@@ -198,10 +198,10 @@
           </div>
         </div>
         <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-          <form action="" method="POST">
 
-            {% if lista_package|length != 0 %}
-            {% for pack in lista_package %}
+          {% if lista_package|length != 0 %}
+          {% for pack in lista_package %}
+          <form action="" method="POST">
             <div class="col d-flex align-items-start">
               <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
                 <svg class="bi" width="1em" height="1em">
@@ -209,7 +209,7 @@
                 </svg>
               </div>
               <div>
-                <h2>{{ pack['id'] }}</h2>
+                <h2>{{ pack['id_track'] }}</h2>
                 <p style="margin-bottom: 0px;">
                   {% if pack['status_transaction'] == false %}
                   Status: A caminho
@@ -219,31 +219,29 @@
                 </p>
                 <p style="margin-bottom: 0px;">Origem: {{ pack['orig'] }}</p>
                 <p>Destino: {{ pack['dest'] }}</p>
-                <!-- {{ form.id(class="btn btn-primary", id=pack['id'], type="submit", value="Confirmar recebimento") }} -->
                 <button class="btn btn-primary" type="submit">
                   Confirmar recebimento
                 </button>
-                <!-- {{ form.id(class="d-xl-none", value=pack['id']) }} -->
-                {{ form.id(style="display: none", value=pack['id']) }}
+                {{ form.id(style="display: none", value=pack['id_pack']) }}
               </div>
+            </div>
           </form>
-        </div>
-        {% endfor %}
-        {% else %}
-        <div class="col d-flex align-items-start">
-          <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
-            <svg class="bi" width="1em" height="1em">
-              <use xlink:href="#geo-fill" />
-            </svg>
+          {% endfor %}
+          {% else %}
+          <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+              <svg class="bi" width="1em" height="1em">
+                <use xlink:href="#geo-fill" />
+              </svg>
+            </div>
+            <div style="align-self: center;">
+              <p style="margin-bottom: 0px;">
+                Você não tem pacotes a caminho
+              </p>
+            </div>
           </div>
-          <div style="align-self: center;">
-            <p style="margin-bottom: 0px;">
-              Você não tem pacotes a caminho
-            </p>
-          </div>
+          {% endif %}
         </div>
-        {% endif %}
-      </div>
       </div>
       <footer class="d-flex flex-wrap align-items-center container pb-2 pt-5 mb-3"
         style="justify-content: space-around; width: 95%;">

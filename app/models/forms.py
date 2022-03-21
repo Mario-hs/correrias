@@ -26,7 +26,7 @@ class PackageRegisterForm(Form):
 
     email = StringField('email', [validators.data_required(), validators.Length(min=10, max=25)])
 
-    id_pack = StringField('id_pack', [validators.data_required(), validators.Length(min=12, max=12)])
+    id_track = StringField('id_track', [validators.data_required(), validators.Length(min=12, max=12)])
 
     weight = StringField('weight', [validators.data_required(), validators.Length(min=1, max=5)])
 

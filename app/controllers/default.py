@@ -56,7 +56,7 @@ def registerStation():
 
             return redirect(url_for('index'))
         except Exception as ex:
-            return print(ex)
+            return "print(ex)", 400
     return render_template('register.html', form=form)
 
 
@@ -95,10 +95,12 @@ def home():
                             dest_name = d.name
 
                     for p in data_pack:
+                        idTrack = p.id_tracking
                         idPack = p.id_pack
                     lista_package.append(
                         {
-                            "id": idPack,
+                            "id_track": idTrack,
+                            "id_pack": idPack,
                             "source_id": orig_name,
                             "destiny_id": dest_name,
                             "status_transaction": trans.status_transaction,
@@ -111,16 +113,6 @@ def home():
         
     else:
         return redirect(url_for('index'))
-
-
-@app.route("/view-all")
-def view():
-    return "<h1>View All</h1>"
-
-
-@app.route("/register-update")
-def registerUpdate():
-    return "<h1>Register Update</h1>"
 
 
 @app.route("/order", methods=["GET", "POST", "PUT", "DELETE"])
@@ -142,26 +134,29 @@ def order():
         elif request.method == "POST" and form.validate():
             select = request.form.get('station')
             pack = request.json
-            session.add(
-                Package(
-                    id_pack = form.id_pack.data,
+
+            pack = Package(
+                    id_tracking = form.id_track.data,
                     weight = form.weight.data,
                     sender_cpf = form.cpf.data,
                     sender_name = form.name.data,
                     sender_email = form.email.data
                 )
-            )
-            session.commit()
-
-            session.add(
-                Transaction(
-                    package_id= form.id_pack.data,
+            trans = Transaction(
+                    package= pack,
                     destiny_id= select,
                     source_id= current_user.id,
                     status_transaction = 0,
                 )
-            )
-            session.commit()
+
+            try:
+                session.add_all([trans, pack])
+            except:
+                session.rollback()
+                raise
+            else:
+                session.commit()
+
             return redirect(url_for('order'))
         return render_template('order.html', form=form)
     else:
@@ -223,10 +218,12 @@ def package():
                         dest_name = d.name
 
                 for p in data_pack:
+                    idTrack = p.id_tracking
                     idPack = p.id_pack
                 lista_package_source.append(
                     {
-                        "id": idPack,
+                        "id_track": idTrack,
+                        "id_pack": idPack,
                         "source_id": trans.source_id,
                         "destiny_id": trans.destiny_id,
                         "status_transaction": trans.status_transaction,
@@ -249,10 +246,12 @@ def package():
                             dest_name = d.name
 
                     for p in data_pack:
+                        idTrack = p.id_tracking
                         idPack = p.id_pack
                     lista_package_destiny.append(
                         {
-                            "id": idPack,
+                            "id_track": idTrack,
+                            "id_pack": idPack,
                             "source_id": trans.source_id,
                             "destiny_id": trans.destiny_id,
                             "status_transaction": trans.status_transaction,
